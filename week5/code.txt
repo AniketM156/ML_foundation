@@ -1,0 +1,114 @@
+import turicreate
+
+song_data = turicreate.SFrame('song_data.sframe')
+
+song_data.head(3)
+
+song_data['song'].show()
+
+users = song_data['user_id'].unique()
+
+len(users)
+
+## song recommender
+
+train_data,test_data = song_data.random_split(0.8,seed=0)
+
+## popularity recemendor
+
+popular_model = turicreate.popularity_recommender.create(train_data,
+                                                       user_id = 'user_id',
+                                                       item_id = 'song')
+
+popular_model.recommend(users = [users[0]])
+
+popular_model.recommend(users = [users[5]])
+
+## recommender with persanalisaition
+
+personalized_model = turicreate.item_similarity_recommender.create(train_data,
+                                                                  user_id = 'user_id',
+                                                                  item_id = 'song')
+
+personalized_model.recommend(users = [users[5]])
+
+personalized_model.get_similar_items(['kanye west'])
+
+## Model performance
+
+model_performance = turicreate.recommender.util.compare_models(test_data,[popular_model],user_sample = 0.5)
+
+song_data.head(3)
+
+## Kanye west
+
+kanye_user_id = song_data[song_data['artist'] == 'Kanye West']
+
+print(kanye_user_id['user_id'].head(3))
+print("\n")
+
+print('total number of times users listened %s'%len(kanye_user_id['user_id']))
+
+uni_kanye_user_id = kanye_user_id['user_id'].unique()
+
+print('Number of times UNIQUE users listened %s'%len(uni_kanye_user_id))
+
+## Foo Fighters
+
+Foo_Fighters_user_id = song_data[song_data['artist'] == 'Foo Fighters']
+
+print(Foo_Fighters_user_id['user_id'].head(3))
+print("\n")
+
+print('total number of times users listened %s'%len(Foo_Fighters_user_id['user_id']))
+
+uni_Foo_Fighters_user_id = Foo_Fighters_user_id['user_id'].unique()
+
+print('Number of times UNIQUE users listened %s'%len(uni_Foo_Fighters_user_id))
+
+## Taylor Swift
+
+Taylor_user_id = song_data[song_data['artist'] == 'Taylor Swift']
+
+print(Taylor_user_id['user_id'].head(3))
+print("\n")
+
+print('total number of times users listened %s'%len(Taylor_user_id['user_id']))
+
+uni_Taylor_user_id = Taylor_user_id['user_id'].unique()
+
+print('Number of times UNIQUE users listened %s'%len(uni_Taylor_user_id))
+
+## Lady GaGa
+
+Lady_GaGa_user_id = song_data[song_data['artist'] == 'Lady GaGa']
+
+print(Lady_GaGa_user_id['user_id'].head(3))
+print("\n")
+
+print('total number of times users listened %s'%len(Lady_GaGa_user_id['user_id']))
+
+uni_Lady_GaGa_user_id = Lady_GaGa_user_id['user_id'].unique()
+
+print('Number of times UNIQUE users listened %s'%len(uni_Lady_GaGa_user_id))
+
+## Most popular
+
+kanye_table = song_data[song_data['artist'] == 'Kanye West']
+print('Kanye %s ' %kanye_table['listen_count'].sum())
+
+Foo_table = song_data[song_data['artist'] == 'Foo Fighters']
+print('Foo %s ' %Foo_table['listen_count'].sum())
+
+taylor_table = song_data[song_data['artist'] == 'Taylor Swift']
+print('Taylor %s ' %taylor_table['listen_count'].sum())
+
+GaGa_table = song_data[song_data['artist'] == 'Lady GaGa']
+print('Lady Gaga %s ' %GaGa_table['listen_count'].sum())
+
+popularity = song_data.groupby(key_column_names='artist',operations = {'total_count':turicreate.aggregate.SUM('listen_count')})
+
+popularity.sort('total_count',ascending = False)
+
+popularity.sort('total_count',ascending = True)
+

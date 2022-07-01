@@ -1,0 +1,22 @@
+1]counting unique users
+unique users to singers
+artist        user_id
+kanye west
+Foo Fighters
+Taylor Swift
+Lady GaGa
+
+
+
+2]groupby-aggregate - most popular and least popular artist:
+sum the ‘listen_count’
+.groupby()
+
+The .groupby method has two important parameters:
+
+i]key_columns, which takes the column we want to group, in our case, ‘artist’
+
+ii]operations, where we define the aggregation operation we using, in our case, we want to sum over the ‘listen_count’.
+
+song_data.groupby(key_columns='artist', operations={'total_count': turicreate.aggregate.SUM('listen_count')})  
+

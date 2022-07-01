@@ -1,0 +1,8 @@
+Task1:
+sketch summary olumn
+sketch = turicreate.Sketch(image_data['label'])
+least common category in the training data
+
+
+Task 2: Create category-specific image retrieval models
+Split the training data into 4 different SFrame data structures. 
